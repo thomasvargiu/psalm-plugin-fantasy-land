@@ -1,0 +1,12 @@
+<?php
+
+namespace FunctionalPHP\FantasyLand;
+
+/**
+ * @template T
+ * @template-extends Applicative<T>
+ * @template-extends Chain<T>
+ */
+interface Monad extends Applicative, Chain
+{
+}

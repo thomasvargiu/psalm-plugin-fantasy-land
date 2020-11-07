@@ -1,0 +1,145 @@
+<?php
+
+namespace FunctionalPHP\FantasyLand;
+
+const applicator = 'FunctionalPHP\\FantasyLand\\applicator';
+
+/**
+ * @todo Improve type check for generic return type
+ * applicator :: a -> (a -> b) -> b
+ *
+ * @psalm-template T
+ * @psalm-template V
+ * @psalm-template F as null|callable(T): V
+ * @param T $x
+ * @param F $f
+ * @return (F is callable ? V : (callable(callable(T): mixed): mixed))
+ */
+function applicator($x, callable $f = null)
+{}
+
+
+const bind = 'FunctionalPHP\\FantasyLand\\bind';
+
+/**
+ * bind :: Monad m => (a -> m b) -> m a -> m b
+ *
+ * @psalm-template T
+ * @psalm-template U
+ * @psalm-template V as Monad<T>|null
+ *
+ * @param callable(T): Monad<U> $function
+ * @param V $value
+ * @return (V is null ? (callable(Monad<T>): Monad<U>) : Monad<U>)
+ * @psalm-pure
+ */
+function bind(callable $function, Monad $value = null)
+{
+}
+
+const compose = 'FunctionalPHP\\FantasyLand\\compose';
+
+/**
+ * @template T
+ * @template F
+ * @template G
+ * @param callable(G): F $f
+ * @param callable(T): G $g
+ * @return callable(T): F
+ */
+function compose(callable $f, callable $g): callable
+{
+}
+
+const concat = 'FunctionalPHP\\FantasyLand\\concat';
+
+/**
+ * @template T of Semigroup
+ * @param T $a
+ * @param T $b
+ * @return T
+ */
+function concat(Semigroup $a, Semigroup $b): Semigroup
+{
+}
+
+/**
+ * @param int $numberOfArguments
+ * @param callable $function
+ * @param array<array-key, mixed> $args
+ *
+ * @return callable
+ */
+function curryN($numberOfArguments, $function, array $args = array())
+{
+}
+
+const emptyy = 'FunctionalPHP\\FantasyLand\\emptyy';
+
+/**
+ * @template T
+ * @param Monoid<T> $a
+ * @return Monoid<T>
+ */
+function emptyy(Monoid $a): Monoid
+{
+}
+
+const equal = 'FunctionalPHP\\FantasyLand\\equal';
+
+/**
+ * @param Setoid $a
+ * @param Setoid $b
+ * @return bool
+ */
+function equal(Setoid $a, Setoid $b): bool
+{
+}
+
+const identity = 'FunctionalPHP\\FantasyLand\\identity';
+
+/**
+ * @template T
+ * @param T $a
+ * @return T
+ */
+function identity($a)
+{
+}
+
+const map = 'FunctionalPHP\\FantasyLand\\map';
+
+/**
+ * map :: Functor f => (a -> b) -> f a -> f b
+ *
+ * @psalm-template T
+ * @psalm-template U
+ * @psalm-template R as Functor<T>|null
+ *
+ * @param callable(T): U $transformation
+ * @param R $value
+ * @return (R is null ? (callable(Functor<T>): Functor<U>) : Functor<U>)
+ * @psalm-pure
+ */
+function map(callable $transformation, Functor $value = null)
+{
+}
+
+const push_ = 'FunctionalPHP\\FantasyLand\\push_';
+
+/**
+ * push_ :: array[a] -> array[a] -> array[a]
+ *
+ * Append array with values.
+ * Mutation on the road! watch out!!
+ *
+ * @template T
+ * @template U
+ * @param array<array-key, T> $array
+ * @param array<array-key, U> $values
+ *
+ * @return array<array-key, T|U>
+ */
+function push_(array $array, array $values): array
+{
+}

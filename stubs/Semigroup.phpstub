@@ -1,0 +1,16 @@
+<?php
+
+namespace FunctionalPHP\FantasyLand;
+
+/**
+ * @template T
+ */
+interface Semigroup
+{
+    /**
+     * @param Semigroup<T> $value
+     *
+     * @return Semigroup<T>
+     */
+    public function concat(Semigroup $value) : Semigroup;
+}

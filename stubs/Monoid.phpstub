@@ -1,0 +1,15 @@
+<?php
+
+namespace FunctionalPHP\FantasyLand;
+
+/**
+ * @template-covariant T
+ * @template-extends Semigroup<T>
+ */
+interface Monoid extends Semigroup
+{
+    /**
+     * @return Monoid<T>
+     */
+    public static function mempty();
+}

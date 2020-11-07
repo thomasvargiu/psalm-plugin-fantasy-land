@@ -1,0 +1,52 @@
+{
+    "name": "thomasvargiu/psalm-plugin-fantasy-land",
+    "description": "Template to create psalm-plugin projects from",
+    "type": "psalm-plugin",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Thomas Vargiu",
+            "email": "tvargiu@gmail.com"
+        }
+    ],
+    "config": {
+        "sort-packages": true
+    },
+    "require": {
+        "php": "^7.3 || ^8.0",
+        "ext-simplexml": "*",
+        "vimeo/psalm": "^4.0"
+    },
+    "require-dev": {
+        "codeception/codeception": "^4.1",
+        "functional-php/fantasy-land": "^1.0",
+        "weirdan/codeception-psalm-module": "^0.11.0"
+    },
+    "extra": {
+        "psalm": {
+            "pluginClass": "TMV\\PsalmFantasyLand\\Plugin"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "TMV\\PsalmFantasyLand\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "TMV\\PsalmFantasyLand\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "check": [
+            "@cs-check",
+            "@test",
+            "@analyze"
+        ],
+        "analyze": "psalm",
+        "cs-check": "phpcs",
+        "cs-fix": "phpcbf",
+        "test": "codecept run -v",
+        "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
+    }
+}

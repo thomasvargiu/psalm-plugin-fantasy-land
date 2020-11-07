@@ -1,0 +1,103 @@
+name: "Integrate"
+
+on:
+  pull_request: ~
+  push:
+    branches:
+      - master
+  schedule:
+    - cron: "0 10 * * *"
+
+jobs:
+  static-code-analysis:
+    name: "Static Code Analysis"
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php-version:
+          - 7.4
+          - 7.3
+
+        dependencies:
+          - highest
+          - lowest
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+
+      - name: "Install PHP with extensions"
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: none
+          php-version: ${{ matrix.php-version }}
+
+      - name: "Determine composer cache directory"
+        id: determine-composer-cache-directory
+        run: echo "::set-output name=directory::$(composer config cache-dir)"
+
+      - name: "Cache dependencies installed with composer"
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.determine-composer-cache-directory.outputs.directory }}
+          key: php-${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-${{ hashFiles('composer.json') }}
+          restore-keys: php-${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-
+
+      - name: "Install lowest dependencies from composer.json"
+        if: matrix.dependencies == 'lowest'
+        run: composer update --no-interaction --no-progress --no-suggest --prefer-lowest
+
+      - name: "Install highest dependencies from composer.json"
+        if: matrix.dependencies == 'highest'
+        run: composer install --no-interaction --no-progress --no-suggest
+
+      - name: "Cache cache directory for vimeo/psalm"
+        uses: actions/cache@v1
+        with:
+          path: .build/psalm
+          key: php-${{ matrix.php-version }}-psalm-${{ github.sha }}
+          restore-keys: php-${{ matrix.php-version }}-psalm-
+
+      - name: "Run vimeo/psalm"
+        run: vendor/bin/psalm --find-dead-code --find-unused-psalm-suppress --shepherd --show-info=false --stats --output-format=github
+
+  tests:
+    name: "Tests"
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php-version:
+          - 7.3
+          - 7.4
+          - nightly
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+
+      - name: "Install PHP with extensions"
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: none
+          php-version: ${{ matrix.php-version }}
+
+      - name: "Determine composer cache directory"
+        id: determine-composer-cache-directory
+        run: echo "::set-output name=directory::$(composer config cache-dir)"
+
+      - name: "Cache dependencies installed with composer"
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.determine-composer-cache-directory.outputs.directory }}
+          key: php-${{ matrix.php-version }}-composer-${{ hashFiles('composer.json') }}
+          restore-keys: php-${{ matrix.php-version }}-composer-
+
+      - name: "Build acceptance tests with codeception"
+        run: vendor/bin/codecept build
+
+      - name: "Run base acceptance tests with codeception"
+        run: vendor/bin/codecept run -v

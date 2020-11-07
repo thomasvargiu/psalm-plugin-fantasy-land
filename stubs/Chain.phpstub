@@ -1,0 +1,21 @@
+<?php
+
+namespace FunctionalPHP\FantasyLand;
+
+/**
+ * @template T
+ * @template-extends Apply<T>
+ */
+interface Chain extends Apply
+{
+    /**
+     * @template U of Chain
+     * @psalm-param callable(T): U $function
+     * @psalm-return U
+     *
+     * @param callable $function
+     *
+     * @return Chain
+     */
+    public function bind(callable $function);
+}

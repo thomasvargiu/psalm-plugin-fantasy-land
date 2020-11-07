@@ -1,0 +1,11 @@
+<?php
+
+namespace FunctionalPHP\FantasyLand;
+
+/**
+ * @template T
+ * @template-extends Apply<T>
+ */
+interface Applicative extends Apply, Pointed
+{
+}

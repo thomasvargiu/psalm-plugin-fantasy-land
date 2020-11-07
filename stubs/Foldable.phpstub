@@ -1,0 +1,23 @@
+<?php
+
+namespace FunctionalPHP\FantasyLand;
+
+interface Foldable
+{
+    /**
+     * reduce :: (b -> a -> b) -> b -> b
+     *
+     * @template A
+     * @template V
+     * @template R
+     * @psalm-param callable(A|R, V): A|R
+     * @psalm-param A $accumulator
+     * @psalm-return A|R
+     *
+     * @param callable $function    Binary function ($accumulator, $value)
+     * @param mixed    $accumulator Value to witch reduce
+     *
+     * @return mixed Same type as $accumulator
+     */
+    public function reduce(callable $function, $accumulator);
+}

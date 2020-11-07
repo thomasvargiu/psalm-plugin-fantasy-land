@@ -1,0 +1,13 @@
+<?php
+
+namespace FunctionalPHP\FantasyLand;
+
+interface Pointed
+{
+    /**
+     * @param mixed $value
+     *
+     * @return mixed
+     */
+    public static function of($value);
+}
