@@ -11,14 +11,9 @@ interface Foldable
      * reduce :: (b -> a -> b) -> b -> b
      *
      * @template A
-     * @psalm-param callable(A, T): A $function
-     * @psalm-param A $accumulator
-     * @psalm-return A
-     *
-     * @param callable $function    Binary function ($accumulator, $value)
-     * @param mixed    $accumulator Value to witch reduce
-     *
-     * @return mixed Same type as $accumulator
+     * @param callable(A, T): A $function
+     * @param A $accumulator
+     * @return A
      */
     public function reduce(callable $function, $accumulator);
 }

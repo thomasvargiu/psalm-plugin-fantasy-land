@@ -12,12 +12,8 @@ interface Chain extends Apply
      * bind :: Monad m => (a -> m b) -> m b
      *
      * @template U of Chain
-     * @psalm-param callable(T): U $function
-     * @psalm-return U
-     *
-     * @param callable $function
-     *
-     * @return Chain
+     * @param callable(T): U $function
+     * @return U
      */
     public function bind(callable $function);
 }

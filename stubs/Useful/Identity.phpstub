@@ -3,7 +3,6 @@
 namespace FunctionalPHP\FantasyLand\Useful;
 
 use FunctionalPHP\FantasyLand;
-use FunctionalPHP\FantasyLand\Functor;
 
 /**
  * @template T
@@ -12,11 +11,6 @@ use FunctionalPHP\FantasyLand\Functor;
 class Identity implements FantasyLand\Monad
 {
     const of = 'FunctionalPHP\FantasyLand\Useful\Identity::of';
-
-    /**
-     * @var T
-     */
-    private $value;
 
     /**
      * @template U
@@ -36,10 +30,10 @@ class Identity implements FantasyLand\Monad
 
     /**
      * @template F
-     * @param callable(T): F $function
+     * @param callable(T): F $transformation
      * @return Identity<F>
      */
-    public function map(callable $function): FantasyLand\Functor
+    public function map(callable $transformation): FantasyLand\Functor
     {
     }
 
@@ -53,8 +47,8 @@ class Identity implements FantasyLand\Monad
     }
 
     /**
-     * @template U of Chain
-     * @param callable(T): U $function
+     * @template U of FantasyLand\Chain
+     * @param callable(T): U $transformation
      * @return U
      */
     public function bind(callable $transformation)

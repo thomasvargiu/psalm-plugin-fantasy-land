@@ -8,8 +8,8 @@ const identity = 'FunctionalPHP\FantasyLand\identity';
 
 /**
  * @template T
- * @psalm-param T $a
- * @psalm-return T
+ * @param T $a
+ * @return T
  */
 function identity($a)
 {
@@ -25,9 +25,9 @@ const concat = 'FunctionalPHP\FantasyLand\concat';
 
 /**
  * @template T
- * @psalm-param Semigroup<T> $a
- * @psalm-param Semigroup<T> $b
- * @psalm-return Semigroup<T>
+ * @param Semigroup<T> $a
+ * @param Semigroup<T> $b
+ * @return Semigroup<T>
  */
 function concat(Semigroup $a, Semigroup $b): Semigroup
 {
@@ -37,8 +37,8 @@ const emptyy = 'FunctionalPHP\FantasyLand\emptyy';
 
 /**
  * @template T
- * @psalm-param Monoid<T> $a
- * @psalm-return Monoid<T>
+ * @param Monoid<T> $a
+ * @return Monoid<T>
  */
 function emptyy(Monoid $a): Monoid
 {
@@ -57,9 +57,9 @@ const map = 'FunctionalPHP\FantasyLand\map';
  * @template U
  * @template R as Functor<T>|null
  *
- * @psalm-param callable(T): U $transformation
- * @psalm-param R $value
- * @psalm-return (R is null ? (callable(Functor<T>): Functor<U>) : Functor<U>)
+ * @param callable(T): U $transformation
+ * @param R $value
+ * @return (R is null ? (callable(Functor<T>): Functor<U>) : Functor<U>)
  */
 function map(callable $transformation, Functor $value = null)
 {
@@ -77,9 +77,9 @@ const bind = 'FunctionalPHP\FantasyLand\bind';
  * @template U of Chain
  * @template V as Monad<T>|null
  *
- * @psalm-param callable(T): U $function
- * @psalm-param V $value
- * @psalm-return (V is null ? (callable(Monad<T>): U) : U)
+ * @param callable(T): U $function
+ * @param V $value
+ * @return (V is null ? (callable(Monad<T>): U) : U)
  */
 function bind(callable $function, Monad $value = null)
 {
@@ -94,9 +94,9 @@ const compose = 'FunctionalPHP\FantasyLand\compose';
  * @template T
  * @template F
  * @template G
- * @psalm-param callable(G): F $f
- * @psalm-param callable(T): G $g
- * @psalm-return \Closure(T): F
+ * @param callable(G): F $f
+ * @param callable(T): G $g
+ * @return callable(T): F
  */
 function compose(callable $f, callable $g): callable
 {
@@ -111,13 +111,11 @@ const applicator = 'FunctionalPHP\FantasyLand\applicator';
 /**
  * applicator :: a -> (a -> b) -> b
  *
- * @todo Improve type check for callable return type
  * @template T
  * @template V
- * @template F as null|callable(T): V
- * @psalm-param T $x
- * @psalm-param F $f
- * @psalm-return (F is callable ? V : (callable(callable(T): V): V))
+ * @param T $x
+ * @param null|callable(T): V $f
+ * @return (func_num_args() is 1 ? (callable(callable(T): mixed): mixed) : V)
  */
 function applicator($x, callable $f = null)
 {
@@ -127,19 +125,17 @@ function applicator($x, callable $f = null)
 /**
  * Curry function
  *
- * @deprecated
- *
  * @template T
- * @template A of list<T>
- * @psalm-param A $args
- * @psalm-param callable $function
+ * @template A of list<T>|array<array-key, T>
+ * @param A $args
+ * @param callable $function
+ * @return callable
  */
 function curryN(int $numberOfArguments, callable $function, array $args = [])
 {
     return
         /**
-         * @psalm-param T ...$argsNext
-         * @param  mixed ...$argsNext
+         * @param  T ...$argsNext
          * @return mixed
          */
         function (...$argsNext) use ($numberOfArguments, $function, $args) {
@@ -164,9 +160,9 @@ const push_ = 'FunctionalPHP\FantasyLand\push_';
  *
  * @template T
  * @template U
- * @psalm-param array<array-key, T> $array
- * @psalm-param array<array-key, U> $values
- * @psalm-return array<array-key, T|U>
+ * @param array<array-key, T> $array
+ * @param array<array-key, U> $values
+ * @return array<array-key, T|U>
  */
 function push_(array $array, array $values): array
 {

@@ -10,12 +10,8 @@ interface Apply extends Functor
 {
     /**
      * @template U
-     * @psalm-param Apply<U> $b
-     * @psalm-return (T is callable ? Apply<U> : never-return)
-     *
-     * @param Apply $b
-     *
-     * @return Apply
+     * @param Apply<U> $b
+     * @return (T is callable ? Apply<U> : never-return)
      */
     public function ap(Apply $b) : Apply;
 }

@@ -9,8 +9,8 @@ interface Functor
 {
     /**
      * @template F
-     * @psalm-param callable(T): F $function
-     * @psalm-return Functor<F>
+     * @param callable(T): F $function
+     * @return Functor<F>
      */
     public function map(callable $function) : Functor;
 }

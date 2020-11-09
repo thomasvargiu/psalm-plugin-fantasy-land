@@ -5,15 +5,12 @@ Feature: Identity
 
   Background:
     Given I have the default psalm configuration
-    And I have the following code preamble
-      """
-      <?php
-      use FunctionalPHP\FantasyLand\Useful\Identity;
-      """
+    And I have the default code preamble
 
   Scenario: Asserting psalm recognizes Identity type from of()
     Given I have the following code
       """
+      use FunctionalPHP\FantasyLand\Useful\Identity;
       /** @psalm-trace $identityString */
       $identityString = Identity::of('foo');
       /** @psalm-trace $identityInt */
@@ -29,9 +26,10 @@ Feature: Identity
   Scenario: Asserting psalm recognizes return type of map()
     Given I have the following code
       """
+      use FunctionalPHP\FantasyLand\Useful\Identity;
       $identity = Identity::of('foo');
       $function = function (string $a): int {
-          return random_int(0, 100);
+          return random_int(-1, 1);
       };
       /** @psalm-trace $value */
       $value = $identity->map($function);
@@ -45,9 +43,11 @@ Feature: Identity
   Scenario: Asserting psalm recognizes return type of bind()
     Given I have the following code
       """
+      use FunctionalPHP\FantasyLand\Useful\Identity;
+      use FunctionalPHP\FantasyLand\Useful\Chain;
       $identity = Identity::of('foo');
-      $function = function (string $a): Identity {
-          return Identity::of(random_int(-1, 1));
+      $function = function (string $a): FakeMonad {
+          return new FakeMonad(random_int(-1, 1));
       };
       /** @psalm-trace $value */
       $value = $identity->bind($function);
@@ -55,5 +55,5 @@ Feature: Identity
     When I run psalm
     Then I see these errors
       | Type  | Message |
-      | Trace | $value: FunctionalPHP\FantasyLand\Useful\Identity<int> |
+      | Trace | $value: FakeMonad<int> |
     And I see no other errors

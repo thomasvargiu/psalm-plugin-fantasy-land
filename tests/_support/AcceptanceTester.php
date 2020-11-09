@@ -2,6 +2,8 @@
 
 namespace TMV\PsalmFantasyLand\Tests;
 
+use FunctionalPHP\FantasyLand\Functor;
+
 /**
  * Inherited Methods
  * @method void wantToTest($text)
@@ -27,16 +29,6 @@ class AcceptanceTester extends \Codeception\Actor
         'default_file' => 'somefile.php',
         'default_dir' => 'tests/_run/',
     ];
-
-    /**
-     * @When I run psalm with info
-     * @When I run Psalm with info
-     */
-    public function runPsalmWithInfo(): void
-    {
-        $this->runPsalmIn($this->config['default_dir'], ['--show-info=true']);
-        $this->runPsalmWithDeadCodeDetection();
-    }
 
     /**
      * @Given I have the default psalm configuration
@@ -73,6 +65,52 @@ XML;
 <?php
 
 use FunctionalPHP\FantasyLand as f;
+
+/**
+ * @template T
+ * @template-implements f\Monad<T>
+ */
+class FakeMonad implements f\Monad
+{
+  /**
+   * @psalm-param T $value
+   */
+  public function __construct($value)
+  {
+  }
+
+  /** @psalm-suppress InvalidReturnType */
+  public function ap(\FunctionalPHP\FantasyLand\Apply $b): \FunctionalPHP\FantasyLand\Apply
+  {
+  }
+
+  /** @psalm-suppress InvalidReturnType */
+  public function bind(callable $function)
+  {
+  }
+
+  /** @psalm-suppress InvalidReturnType */
+  public function map(callable $function): \FunctionalPHP\FantasyLand\Functor
+  {
+  }
+  
+  /**
+   * @psalm-suppress InvalidReturnType
+   */
+   public function map2(callable $function): \FunctionalPHP\FantasyLand\Functor
+   {
+   }
+
+  /**
+   * @template U
+   * @psalm-param U $value
+   * @psalm-return FakeMonad<U>
+   */
+  public static function of($value)
+  {
+      return new FakeMonad($value);
+  }
+}
 
 CODE;
 
