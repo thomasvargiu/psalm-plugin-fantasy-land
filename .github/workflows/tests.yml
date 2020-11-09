@@ -11,18 +11,23 @@ on:
 jobs:
   static-code-analysis:
     name: "Static Code Analysis"
-
-    runs-on: ubuntu-latest
+    runs-on: "ubuntu-20.04"
 
     strategy:
       matrix:
         php-version:
-          - 7.4
+          - 7.1
+          - 7.2
           - 7.3
-
+          - 7.4
+          - 8.0
         dependencies:
           - highest
           - lowest
+        include:
+            - php-version: "7.4"
+              codestyle: "true"
+              analyse: true
 
     steps:
       - name: "Checkout"
@@ -61,19 +66,20 @@ jobs:
           restore-keys: php-${{ matrix.php-version }}-psalm-
 
       - name: "Run vimeo/psalm"
-        run: vendor/bin/psalm --find-dead-code --find-unused-psalm-suppress --shepherd --show-info=false --stats --output-format=github
+        run: vendor/bin/psalm --find-unused-psalm-suppress --shepherd --show-info=false --stats --output-format=github
 
   tests:
     name: "Tests"
-
-    runs-on: ubuntu-latest
+    runs-on: "ubuntu-20.04"
 
     strategy:
       matrix:
         php-version:
+          - 7.1
+          - 7.2
           - 7.3
           - 7.4
-          - nightly
+          - 8.0
 
     steps:
       - name: "Checkout"
@@ -95,6 +101,9 @@ jobs:
           path: ${{ steps.determine-composer-cache-directory.outputs.directory }}
           key: php-${{ matrix.php-version }}-composer-${{ hashFiles('composer.json') }}
           restore-keys: php-${{ matrix.php-version }}-composer-
+
+      - name: "Install dependencies from composer.json"
+        run: composer install --no-interaction --no-progress --no-suggest
 
       - name: "Build acceptance tests with codeception"
         run: vendor/bin/codecept build

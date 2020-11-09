@@ -3,67 +3,59 @@
 namespace FunctionalPHP\FantasyLand\Useful;
 
 use FunctionalPHP\FantasyLand;
+use FunctionalPHP\FantasyLand\Functor;
 
 /**
  * @template T
- * @extends FantasyLand\Monad<T>
+ * @template-implements FantasyLand\Monad<T>
  */
 class Identity implements FantasyLand\Monad
 {
     const of = 'FunctionalPHP\FantasyLand\Useful\Identity::of';
 
     /**
-     * @psalm-var T
-     * @var mixed
+     * @var T
      */
     private $value;
 
     /**
      * @template U
-     * @psalm-param U $value
-     * @psalm-return Identity<U>
-     * @inheritdoc
-     *
-     * @param mixed $value
-     * @return Identity
+     * @param U $value
+     * @return Identity<U>
      */
     public static function of($value)
     {
     }
 
     /**
-     * @psalm-param T $value
-     * @param mixed $value
+     * @param T $value
      */
     private function __construct($value)
     {
     }
 
     /**
-     * @inheritdoc
-     * @template U
-     * @psalm-param callable(T): U $function
-     * @psalm-return Identity<U>
+     * @template F
+     * @param callable(T): F $function
+     * @return Identity<F>
      */
-    public function map(callable $transformation): FantasyLand\Functor
+    public function map(callable $function): FantasyLand\Functor
     {
     }
 
     /**
      * @template U
-     * @psalm-param FantasyLand\Apply<U> $applicative
-     * @psalm-assert Identity<U> $b
-     * @psalm-return (T is callable ? FantasyLand\Apply : never-return)
-     *
-     * @param FantasyLand\Apply $applicative
-     * @return FantasyLand\Apply
+     * @param FantasyLand\Apply<U> $applicative
+     * @return (T is callable ? Identity<U> : never-return)
      */
     public function ap(FantasyLand\Apply $applicative): FantasyLand\Apply
     {
     }
 
     /**
-     * @inheritdoc
+     * @template U of Chain
+     * @param callable(T): U $function
+     * @return U
      */
     public function bind(callable $transformation)
     {

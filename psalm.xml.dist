@@ -12,6 +12,15 @@
             <directory name="vendor" />
         </ignoreFiles>
     </projectFiles>
+    <fileExtensions>
+        <extension name=".php" />
+    </fileExtensions>
+    <issueHandlers>
+        <InternalMethod errorLevel="suppress" />
+        <InternalClass errorLevel="suppress" />
+        <DuplicateClass errorLevel="suppress" />
+        <DuplicateFunction errorLevel="suppress" />
+    </issueHandlers>
 
     <plugins>
         <pluginClass class="TMV\PsalmFantasyLand\Plugin"/>

@@ -13,8 +13,23 @@ class Plugin implements PluginEntryPointInterface
 {
     public function __invoke(RegistrationInterface $registration, ?SimpleXMLElement $config = null): void
     {
-        foreach ($this->getStubFiles() as $file) {
-            $registration->addStubFile($file);
+        $loadStubs = true;
+        if (null !== $config) {
+            /** @var SimpleXMLElement|null $pluginConfig */
+            $pluginConfig = $config->pluginConfig;
+            $loadStubs = 'false' !== ($pluginConfig ? (string)($pluginConfig['loadStubs'] ?? 'true') : 'true');
+        }
+
+        if ($loadStubs) {
+            foreach ($this->getStubFiles() as $file) {
+                $registration->addStubFile($file);
+            }
+        }
+
+        if ($loadStubs) {
+            foreach ($this->getStubFiles() as $file) {
+                $registration->addStubFile($file);
+            }
         }
 
         $classes = [
@@ -39,6 +54,7 @@ class Plugin implements PluginEntryPointInterface
     {
         $dir = new RecursiveDirectoryIterator($folder);
         $ite = new RecursiveIteratorIterator($dir);
+        /** @psalm-var \FilterIterator<array-key, string[]> $files */
         $files = new RegexIterator($ite, $pattern, RegexIterator::GET_MATCH);
 
         return array_merge([], ...array_values(iterator_to_array($files)));

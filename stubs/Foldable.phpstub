@@ -2,14 +2,16 @@
 
 namespace FunctionalPHP\FantasyLand;
 
+/**
+ * @template T
+ */
 interface Foldable
 {
     /**
      * reduce :: (b -> a -> b) -> b -> b
      *
      * @template A
-     * @template V
-     * @psalm-param callable(A, V): A $function
+     * @psalm-param callable(A, T): A $function
      * @psalm-param A $accumulator
      * @psalm-return A
      *

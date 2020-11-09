@@ -130,7 +130,9 @@ function applicator($x, callable $f = null)
  * @deprecated
  *
  * @template T
- * @psalm-param array<array-key, T> $args
+ * @template A of list<T>
+ * @psalm-param A $args
+ * @psalm-param callable $function
  */
 function curryN(int $numberOfArguments, callable $function, array $args = [])
 {

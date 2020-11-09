@@ -11,11 +11,11 @@ interface Apply extends Functor
     /**
      * @template U
      * @psalm-param Apply<U> $b
-     * @psalm-return Apply<mixed>
+     * @psalm-return (T is callable ? Apply<U> : never-return)
      *
      * @param Apply $b
      *
      * @return Apply
      */
-    public function ap(Apply $applicative) : Apply;
+    public function ap(Apply $b) : Apply;
 }

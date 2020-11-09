@@ -5,6 +5,7 @@ namespace TMV\PsalmFantasyLand\Hooks;
 
 use Psalm\CodeLocation;
 use Psalm\Context;
+use Psalm\Internal\Analyzer\StatementsAnalyzer;
 use Psalm\Internal\Type\Comparator\CallableTypeComparator;
 use Psalm\Internal\Type\Comparator\UnionTypeComparator;
 use Psalm\Issue\InvalidArgument;
@@ -39,7 +40,7 @@ class CurryNReturnTypeProvider implements FunctionReturnTypeProviderInterface
         CodeLocation $code_location
     ): ?Type\Union
     {
-        if (!$statements_source instanceof \Psalm\Internal\Analyzer\StatementsAnalyzer) {
+        if (!$statements_source instanceof StatementsAnalyzer) {
             return null;
         }
 
@@ -61,31 +62,25 @@ class CurryNReturnTypeProvider implements FunctionReturnTypeProviderInterface
         $functionArgType = $statements_source->getNodeTypeProvider()->getType($functionArg->value) ?? Type::getMixed();
         $functionClosure = CallableTypeComparator::getCallableFromAtomic($codebase, array_values($functionArgType->getAtomicTypes())[0]);
 
-        /** @var Type\Union|null $numberOfArgumentsArgType */
         $numberOfArgumentsArgType = $statements_source->getNodeTypeProvider()->getType($numberOfArgumentsArg->value);
-
-        /** @var Type\Union|null $argsArgType */
         $argsArgType = $statements_source->getNodeTypeProvider()->getType($argsArg->value);
 
-        if (!$functionClosure || ! $numberOfArgumentsArgType || ! $numberOfArgumentsArgType->isSingleIntLiteral()) {
+        if (! $argsArgType || !$functionClosure || ! $numberOfArgumentsArgType || ! $numberOfArgumentsArgType->isSingleIntLiteral()) {
             return null;
         }
 
-        /** @var Type\Atomic\TLiteralInt|null $literalInt */
         $literalInt = array_values($numberOfArgumentsArgType->getLiteralInts())[0] ?? null;
 
         if (null === $literalInt) {
             return null;
         }
 
-        /** @var Type\Atomic\TKeyedArray|null $argsKeyedArray */
         $argsKeyedArray = array_values(array_filter($argsArgType->getAtomicTypes(), function (Type\Atomic $type) {
             return $type instanceof Type\Atomic\TKeyedArray;
         }))[0] ?? null;
 
         if ($argsKeyedArray) {
             $indexedTypes = array_values($argsKeyedArray->properties);
-            /** @var FunctionLikeParameter[] $applyParams */
             $applyParams = array_slice(array_values($functionClosure->params ?? []), 0, $literalInt->value);
             foreach ($applyParams as $i => $param) {
                 if (! UnionTypeComparator::isContainedBy(

@@ -19,7 +19,6 @@ use Psalm\StatementsSource;
 use Psalm\Storage\ClassLikeStorage;
 use Psalm\Type;
 
-
 class ApplicativeReturnTypeProvider implements AfterMethodCallAnalysisInterface
 {
     /**
@@ -55,6 +54,10 @@ class ApplicativeReturnTypeProvider implements AfterMethodCallAnalysisInterface
         $classlikeStorage = $codebase->classlike_storage_provider->get($className);
         $nodeTypeProvider = $statements_source->getNodeTypeProvider();
 
+        if (null === $classlikeStorage->template_types) {
+            return;
+        }
+
         $applyType = static::getTemplateType($classlikeStorage, Apply::class);
 
         if (null === $applyType) {
@@ -70,7 +73,6 @@ class ApplicativeReturnTypeProvider implements AfterMethodCallAnalysisInterface
 
         $typeIndex = false;
         if ($applyType->hasTemplate()) {
-            /** @var Type\Atomic\TTemplateParam $templateType */
             $templateType = array_values($applyType->getTemplateTypes())[0];
             $typeIndex = array_search($templateType->param_name, array_keys($classlikeStorage->template_types));
         }
@@ -109,6 +111,8 @@ class ApplicativeReturnTypeProvider implements AfterMethodCallAnalysisInterface
 
         $typeParams = $varAtomicType->type_params;
         $typeParams[$typeIndex] = $callable->return_type;
+
+        /** @psalm-var non-empty-list<Type\Union> $typeParams */
 
         $type = new Type\Atomic\TGenericObject(
             $className,
