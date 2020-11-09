@@ -3,7 +3,7 @@
 namespace FunctionalPHP\FantasyLand;
 
 /**
- * @template-covariant T
+ * @template T
  * @template-extends Semigroup<T>
  */
 interface Monoid extends Semigroup

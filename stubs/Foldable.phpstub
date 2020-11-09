@@ -9,10 +9,9 @@ interface Foldable
      *
      * @template A
      * @template V
-     * @template R
-     * @psalm-param callable(A|R, V): A|R
+     * @psalm-param callable(A, V): A $function
      * @psalm-param A $accumulator
-     * @psalm-return A|R
+     * @psalm-return A
      *
      * @param callable $function    Binary function ($accumulator, $value)
      * @param mixed    $accumulator Value to witch reduce

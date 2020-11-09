@@ -1,131 +1,158 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FunctionalPHP\FantasyLand;
 
-const applicator = 'FunctionalPHP\\FantasyLand\\applicator';
-
-/**
- * @todo Improve type check for generic return type
- * applicator :: a -> (a -> b) -> b
- *
- * @psalm-template T
- * @psalm-template V
- * @psalm-template F as null|callable(T): V
- * @param T $x
- * @param F $f
- * @return (F is callable ? V : (callable(callable(T): mixed): mixed))
- */
-function applicator($x, callable $f = null)
-{}
-
-
-const bind = 'FunctionalPHP\\FantasyLand\\bind';
-
-/**
- * bind :: Monad m => (a -> m b) -> m a -> m b
- *
- * @psalm-template T
- * @psalm-template U
- * @psalm-template V as Monad<T>|null
- *
- * @param callable(T): Monad<U> $function
- * @param V $value
- * @return (V is null ? (callable(Monad<T>): Monad<U>) : Monad<U>)
- * @psalm-pure
- */
-function bind(callable $function, Monad $value = null)
-{
-}
-
-const compose = 'FunctionalPHP\\FantasyLand\\compose';
+const identity = 'FunctionalPHP\FantasyLand\identity';
 
 /**
  * @template T
- * @template F
- * @template G
- * @param callable(G): F $f
- * @param callable(T): G $g
- * @return callable(T): F
- */
-function compose(callable $f, callable $g): callable
-{
-}
-
-const concat = 'FunctionalPHP\\FantasyLand\\concat';
-
-/**
- * @template T of Semigroup
- * @param T $a
- * @param T $b
- * @return T
- */
-function concat(Semigroup $a, Semigroup $b): Semigroup
-{
-}
-
-/**
- * @param int $numberOfArguments
- * @param callable $function
- * @param array<array-key, mixed> $args
- *
- * @return callable
- */
-function curryN($numberOfArguments, $function, array $args = array())
-{
-}
-
-const emptyy = 'FunctionalPHP\\FantasyLand\\emptyy';
-
-/**
- * @template T
- * @param Monoid<T> $a
- * @return Monoid<T>
- */
-function emptyy(Monoid $a): Monoid
-{
-}
-
-const equal = 'FunctionalPHP\\FantasyLand\\equal';
-
-/**
- * @param Setoid $a
- * @param Setoid $b
- * @return bool
- */
-function equal(Setoid $a, Setoid $b): bool
-{
-}
-
-const identity = 'FunctionalPHP\\FantasyLand\\identity';
-
-/**
- * @template T
- * @param T $a
- * @return T
+ * @psalm-param T $a
+ * @psalm-return T
  */
 function identity($a)
 {
 }
 
-const map = 'FunctionalPHP\\FantasyLand\\map';
+const equal = 'FunctionalPHP\FantasyLand\equal';
+
+function equal(Setoid $a, Setoid $b): bool
+{
+}
+
+const concat = 'FunctionalPHP\FantasyLand\concat';
+
+/**
+ * @template T
+ * @psalm-param Semigroup<T> $a
+ * @psalm-param Semigroup<T> $b
+ * @psalm-return Semigroup<T>
+ */
+function concat(Semigroup $a, Semigroup $b): Semigroup
+{
+}
+
+const emptyy = 'FunctionalPHP\FantasyLand\emptyy';
+
+/**
+ * @template T
+ * @psalm-param Monoid<T> $a
+ * @psalm-return Monoid<T>
+ */
+function emptyy(Monoid $a): Monoid
+{
+}
+
+
+/**
+ * @var callable
+ */
+const map = 'FunctionalPHP\FantasyLand\map';
 
 /**
  * map :: Functor f => (a -> b) -> f a -> f b
  *
- * @psalm-template T
- * @psalm-template U
- * @psalm-template R as Functor<T>|null
+ * @template T
+ * @template U
+ * @template R as Functor<T>|null
  *
- * @param callable(T): U $transformation
- * @param R $value
- * @return (R is null ? (callable(Functor<T>): Functor<U>) : Functor<U>)
- * @psalm-pure
+ * @psalm-param callable(T): U $transformation
+ * @psalm-param R $value
+ * @psalm-return (R is null ? (callable(Functor<T>): Functor<U>) : Functor<U>)
  */
 function map(callable $transformation, Functor $value = null)
 {
 }
 
-const push_ = 'FunctionalPHP\\FantasyLand\\push_';
+/**
+ * @var callable
+ */
+const bind = 'FunctionalPHP\FantasyLand\bind';
+
+/**
+ * bind :: Monad m => (a -> m b) -> m a -> m b
+ *
+ * @template T
+ * @template U of Chain
+ * @template V as Monad<T>|null
+ *
+ * @psalm-param callable(T): U $function
+ * @psalm-param V $value
+ * @psalm-return (V is null ? (callable(Monad<T>): U) : U)
+ */
+function bind(callable $function, Monad $value = null)
+{
+}
+
+/**
+ * @var callable
+ */
+const compose = 'FunctionalPHP\FantasyLand\compose';
+
+/**
+ * @template T
+ * @template F
+ * @template G
+ * @psalm-param callable(G): F $f
+ * @psalm-param callable(T): G $g
+ * @psalm-return \Closure(T): F
+ */
+function compose(callable $f, callable $g): callable
+{
+}
+
+
+/**
+ * @var callable
+ */
+const applicator = 'FunctionalPHP\FantasyLand\applicator';
+
+/**
+ * applicator :: a -> (a -> b) -> b
+ *
+ * @todo Improve type check for callable return type
+ * @template T
+ * @template V
+ * @template F as null|callable(T): V
+ * @psalm-param T $x
+ * @psalm-param F $f
+ * @psalm-return (F is callable ? V : (callable(callable(T): V): V))
+ */
+function applicator($x, callable $f = null)
+{
+}
+
+
+/**
+ * Curry function
+ *
+ * @deprecated
+ *
+ * @template T
+ * @psalm-param array<array-key, T> $args
+ */
+function curryN(int $numberOfArguments, callable $function, array $args = [])
+{
+    return
+        /**
+         * @psalm-param T ...$argsNext
+         * @param  mixed ...$argsNext
+         * @return mixed
+         */
+        function (...$argsNext) use ($numberOfArguments, $function, $args) {
+            $argsLeft = $numberOfArguments - func_num_args();
+
+            return $argsLeft <= 0
+                ? $function(...push_($args, $argsNext))
+                : curryN($argsLeft, $function, push_($args, $argsNext));
+        };
+}
+
+/**
+ * @var callable
+ */
+const push_ = 'FunctionalPHP\FantasyLand\push_';
 
 /**
  * push_ :: array[a] -> array[a] -> array[a]
@@ -135,11 +162,15 @@ const push_ = 'FunctionalPHP\\FantasyLand\\push_';
  *
  * @template T
  * @template U
- * @param array<array-key, T> $array
- * @param array<array-key, U> $values
- *
- * @return array<array-key, T|U>
+ * @psalm-param array<array-key, T> $array
+ * @psalm-param array<array-key, U> $values
+ * @psalm-return array<array-key, T|U>
  */
 function push_(array $array, array $values): array
 {
+    foreach ($values as $value) {
+        $array[] = $value;
+    }
+
+    return $array;
 }

@@ -10,10 +10,10 @@ interface Apply extends Functor
 {
     /**
      * @template U
-     * @psalm-param Apply<U> $applicative
-     * @psalm-return Apply
+     * @psalm-param Apply<U> $b
+     * @psalm-return Apply<mixed>
      *
-     * @param Apply $applicative
+     * @param Apply $b
      *
      * @return Apply
      */

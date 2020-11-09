@@ -4,29 +4,24 @@ declare(strict_types=1);
 namespace TMV\PsalmFantasyLand\Hooks;
 
 use FunctionalPHP\FantasyLand\Apply;
-use FunctionalPHP\FantasyLand\Chain;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Stmt;
 use Psalm\Codebase;
+use Psalm\CodeLocation;
 use Psalm\Context;
 use Psalm\FileManipulation;
 use Psalm\Internal\Type\Comparator\CallableTypeComparator;
+use Psalm\Issue\InvalidArgument;
+use Psalm\IssueBuffer;
 use Psalm\Plugin\Hook\AfterMethodCallAnalysisInterface;
 use Psalm\StatementsSource;
 use Psalm\Storage\ClassLikeStorage;
 use Psalm\Type;
 
+
 class ApplicativeReturnTypeProvider implements AfterMethodCallAnalysisInterface
 {
-    public static function getClassLikeNames(): array
-    {
-        return [
-            \FunctionalPHP\FantasyLand\Apply::class,
-        ];
-    }
-
     /**
      * @param  MethodCall|StaticCall $expr
      * @param  FileManipulation[] $file_replacements
@@ -43,6 +38,10 @@ class ApplicativeReturnTypeProvider implements AfterMethodCallAnalysisInterface
         Type\Union &$return_type_candidate = null
     ): void
     {
+        if (! $expr instanceof MethodCall) {
+            return;
+        }
+
         [$className, $methodName] = explode('::', $appearing_method_id);
 
         if (! $codebase->classImplements($className, Apply::class)) {
@@ -53,8 +52,6 @@ class ApplicativeReturnTypeProvider implements AfterMethodCallAnalysisInterface
             return;
         }
 
-        $parentFQCLN = $statements_source->getParentFQCLN();
-        $templateTypeMap = $statements_source->getTemplateTypeMap();
         $classlikeStorage = $codebase->classlike_storage_provider->get($className);
         $nodeTypeProvider = $statements_source->getNodeTypeProvider();
 
@@ -66,16 +63,16 @@ class ApplicativeReturnTypeProvider implements AfterMethodCallAnalysisInterface
 
         $varType = $nodeTypeProvider->getType($expr->var);
 
+        if (null === $varType || ! $varType->isSingle()) {
+            // throw
+            return;
+        }
+
         $typeIndex = false;
         if ($applyType->hasTemplate()) {
             /** @var Type\Atomic\TTemplateParam $templateType */
             $templateType = array_values($applyType->getTemplateTypes())[0];
             $typeIndex = array_search($templateType->param_name, array_keys($classlikeStorage->template_types));
-        }
-
-        if (! $varType->isSingle()) {
-            // throw
-            return;
         }
 
         if (false === $typeIndex) {
@@ -91,15 +88,31 @@ class ApplicativeReturnTypeProvider implements AfterMethodCallAnalysisInterface
         $callable = CallableTypeComparator::getCallableFromAtomic($codebase, array_values($varAtomicType->type_params[$typeIndex]->getAtomicTypes())[0]);
 
         if (null === $callable) {
-            // throw
+            if (IssueBuffer::accepts(
+                new InvalidArgument(
+                    'Applicative where ap() method is called must contain a callable',
+                    new CodeLocation($statements_source, $expr),
+                    $method_id
+                ),
+                $statements_source->getSuppressedIssues()
+            )) {
+                // keep soldiering on
+            }
             return;
         }
 
         $callable->return_type;
 
+        if (null === $callable->return_type) {
+            return;
+        }
+
+        $typeParams = $varAtomicType->type_params;
+        $typeParams[$typeIndex] = $callable->return_type;
+
         $type = new Type\Atomic\TGenericObject(
             $className,
-            [$callable->return_type]
+            $typeParams
         );
         $return_type_candidate = new Type\Union([$type]);
     }
@@ -111,10 +124,12 @@ class ApplicativeReturnTypeProvider implements AfterMethodCallAnalysisInterface
         ?Type\Union $lastType = null
     ): ?Type\Union
     {
+        $templateTypes = $storage->template_type_extends[$definingClass] ?? [];
+
         if (null !== $templateName) {
-            $type = $storage->template_type_extends[$definingClass][$templateName] ?? null;
+            $type = $templateTypes[$templateName] ?? null;
         } else {
-            $type = array_values($storage->template_type_extends[$definingClass])[0] ?? null;
+            $type = array_values($templateTypes)[0] ?? null;
         }
 
         if (null === $type) {

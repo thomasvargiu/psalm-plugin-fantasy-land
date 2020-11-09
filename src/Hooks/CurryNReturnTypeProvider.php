@@ -20,6 +20,7 @@ class CurryNReturnTypeProvider implements FunctionReturnTypeProviderInterface
     {
         return [
             strtolower('FunctionalPHP\FantasyLand\curryN'),
+            strtolower('Widmogrod\Functional\curryN'),
         ];
     }
 

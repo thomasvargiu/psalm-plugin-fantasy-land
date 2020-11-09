@@ -1,12 +1,13 @@
 <?php
+declare(strict_types=1);
 
-namespace FunctionalPHP\FantasyLand\Useful;
+namespace TMV\PsalmFantasyLand\Test\Useful;
 
 use FunctionalPHP\FantasyLand;
 
 /**
  * @template T
- * @extends FantasyLand\Monad<T>
+ * @template-implements FantasyLand\Monad<T>
  */
 class Identity implements FantasyLand\Monad
 {
@@ -29,6 +30,7 @@ class Identity implements FantasyLand\Monad
      */
     public static function of($value)
     {
+        return new self($value);
     }
 
     /**
@@ -37,6 +39,7 @@ class Identity implements FantasyLand\Monad
      */
     private function __construct($value)
     {
+        $this->value = $value;
     }
 
     /**
@@ -45,27 +48,34 @@ class Identity implements FantasyLand\Monad
      * @psalm-param callable(T): U $function
      * @psalm-return Identity<U>
      */
-    public function map(callable $transformation): FantasyLand\Functor
+    public function map(callable $function): FantasyLand\Functor
     {
+        return static::of($function($this->value));
     }
 
     /**
      * @template U
      * @psalm-param FantasyLand\Apply<U> $applicative
-     * @psalm-assert Identity<U> $b
-     * @psalm-return (T is callable ? FantasyLand\Apply : never-return)
+     * @psalm-assert Identity<U> $applicative
+     * @psalm-return (T is callable ? Identity : never-return)
      *
      * @param FantasyLand\Apply $applicative
      * @return FantasyLand\Apply
      */
     public function ap(FantasyLand\Apply $applicative): FantasyLand\Apply
     {
+        if (! $applicative instanceof Identity) {
+            throw new \RuntimeException('Applicative should be of the same type: ' . Identity::class);
+        }
+
+        return $applicative->map($this->value);
     }
 
     /**
      * @inheritdoc
      */
-    public function bind(callable $transformation)
+    public function bind(callable $function)
     {
+        return $function($this->value);
     }
 }
