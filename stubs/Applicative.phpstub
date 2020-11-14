@@ -1,11 +1,48 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FunctionalPHP\FantasyLand;
 
 /**
  * @template T
  * @template-extends Apply<T>
  */
-interface Applicative extends Apply, Pointed
+interface Applicative extends
+    Apply,
+    Pointed
 {
+    /**
+     * bind :: Applicative m => m a ~> (a -> m b) -> m b
+     *
+     * @template U
+     * @param callable(T): U $function
+     * @return U
+     */
+    public function bind(callable $function);
+
+    /**
+     * @template U
+     * @param Applicative<U> $applicative
+     * @return Applicative<mixed>
+     */
+    public function ap(Apply $applicative): Apply;
+
+    /**
+     * map :: Applicative f => f a ~> (a -> b) -> f b
+     *
+     * @template U
+     * @param callable(T): U $function
+     * @return Applicative<U>
+     */
+    public function map(callable $function): Functor;
+
+    /**
+     * Put $value in default minimal context.
+     *
+     * @template U
+     * @param U $value
+     * @return Applicative<U>
+     */
+    public static function of($value);
 }

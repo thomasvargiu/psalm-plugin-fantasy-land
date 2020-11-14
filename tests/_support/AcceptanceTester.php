@@ -2,8 +2,6 @@
 
 namespace TMV\PsalmFantasyLand\Tests;
 
-use FunctionalPHP\FantasyLand\Functor;
-
 /**
  * Inherited Methods
  * @method void wantToTest($text)
@@ -18,7 +16,7 @@ use FunctionalPHP\FantasyLand\Functor;
  * @method void pause()
  *
  * @SuppressWarnings(PHPMD)
-*/
+ */
 class AcceptanceTester extends \Codeception\Actor
 {
     use _generated\AcceptanceTesterActions;
@@ -43,77 +41,17 @@ class AcceptanceTester extends \Codeception\Actor
   xmlns="https://getpsalm.org/schema/config"
   xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
 >
-  <projectFiles>
-      <directory name="." />
-  </projectFiles>
-  <plugins>
-      <pluginClass class="TMV\PsalmFantasyLand\Plugin"/>
-  </plugins>
+    <projectFiles>
+          <directory name="." />
+    </projectFiles>
+  
+    <plugins>
+        <pluginClass class="TMV\PsalmFantasyLand\Plugin"/>
+    </plugins>
 </psalm>
 XML;
 
 
         $this->haveTheFollowingConfig($config);
-    }
-
-    /**
-     * @Given I have the default code preamble
-     */
-    public function haveTheDefaultCodePreamble(): void
-    {
-        $code = <<<'CODE'
-<?php
-
-use FunctionalPHP\FantasyLand as f;
-
-/**
- * @template T
- * @template-implements f\Monad<T>
- */
-class FakeMonad implements f\Monad
-{
-  /**
-   * @psalm-param T $value
-   */
-  public function __construct($value)
-  {
-  }
-
-  /** @psalm-suppress InvalidReturnType */
-  public function ap(\FunctionalPHP\FantasyLand\Apply $b): \FunctionalPHP\FantasyLand\Apply
-  {
-  }
-
-  /** @psalm-suppress InvalidReturnType */
-  public function bind(callable $function)
-  {
-  }
-
-  /** @psalm-suppress InvalidReturnType */
-  public function map(callable $function): \FunctionalPHP\FantasyLand\Functor
-  {
-  }
-  
-  /**
-   * @psalm-suppress InvalidReturnType
-   */
-   public function map2(callable $function): \FunctionalPHP\FantasyLand\Functor
-   {
-   }
-
-  /**
-   * @template U
-   * @psalm-param U $value
-   * @psalm-return FakeMonad<U>
-   */
-  public static function of($value)
-  {
-      return new FakeMonad($value);
-  }
-}
-
-CODE;
-
-        $this->haveTheFollowingCodePreamble($code);
     }
 }

@@ -5,39 +5,22 @@ Feature: emptyy
 
   Background:
     Given I have the default psalm configuration
-    And I have the default code preamble
+    And I have the following code preamble
+      """
+      <?php
+      use FunctionalPHP\FantasyLand\Monoid;
+      use function FunctionalPHP\FantasyLand\emptyy;
+      """
 
   Scenario: Asserting psalm recognizes return type
     Given I have the following code
       """
-      /**
-       * @implements f\Monoid<string>
-       */
-      class String_ implements f\Monoid
-      {
-          public $value;
-          final public function __construct(string $value)
-          {
-              $this->value = $value;
-          }
-          public static function mempty()
-          {
-              return new static('');
-          }
-          public function concat(f\Semigroup $value) : f\Semigroup
-          {
-              if ($value instanceof self) {
-                  return new self($this->value . $value->value);
-              }
-
-              throw new \RuntimeException('error');
-          }
-      }
-      $dummy = new String_('foo');
+      /** @var Monoid<string> */
+      $dummy = null;
       /** @psalm-trace $check */
-      $check = String_::mempty();
+      $check = $dummy::mempty();
       /** @psalm-trace $result */
-      $result = f\emptyy($dummy);
+      $result = emptyy($dummy);
       """
     When I run psalm
     Then I see these errors

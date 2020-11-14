@@ -5,7 +5,11 @@ Feature: push_
 
   Background:
     Given I have the default psalm configuration
-    And I have the default code preamble
+    And I have the following code preamble
+      """
+      <?php
+      use function FunctionalPHP\FantasyLand\push_;
+      """
 
   Scenario: Asserting psalm recognizes return type
     Given I have the following code
@@ -14,7 +18,7 @@ Feature: push_
       $b = ['c' => 'foobar', 'foobaz'];
 
       /** @psalm-trace $value */
-      $value = f\push_($a, $b);
+      $value = push_($a, $b);
       """
     When I run psalm
     Then I see these errors

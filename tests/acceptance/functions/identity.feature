@@ -5,13 +5,17 @@ Feature: identity
 
   Background:
     Given I have the default psalm configuration
-    And I have the default code preamble
+    And I have the following code preamble
+      """
+      <?php
+      use function FunctionalPHP\FantasyLand\identity;
+      """
 
   Scenario: Asserting psalm recognizes return type
     Given I have the following code
       """
       /** @psalm-trace $result */
-      $result = f\identity('foo');
+      $result = identity('foo');
       """
     When I run psalm
     Then I see these errors

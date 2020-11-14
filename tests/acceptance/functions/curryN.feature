@@ -5,7 +5,11 @@ Feature: curryN
 
   Background:
     Given I have the default psalm configuration
-    And I have the default code preamble
+    And I have the following code preamble
+      """
+      <?php
+      use function FunctionalPHP\FantasyLand\curryN;
+      """
 
   Scenario: Asserting psalm recognizes return type with 1 literal parameter
     Given I have the following code
@@ -14,7 +18,7 @@ Feature: curryN
           return $a . $b . $c;
       };
       /** @psalm-trace $curried */
-      $curried = f\curryN(1, $function, ['foo']);
+      $curried = curryN(1, $function, ['foo']);
       """
     When I run psalm
     Then I see these errors
@@ -29,7 +33,7 @@ Feature: curryN
           return $a . $b . $c;
       };
       /** @psalm-trace $curried */
-      $curried = f\curryN(1, $function, [2]);
+      $curried = curryN(1, $function, [2]);
       """
     When I run psalm
     Then I see these errors

@@ -57,11 +57,11 @@ const map = 'FunctionalPHP\FantasyLand\map';
  * @template U
  * @template R as Functor<T>|null
  *
- * @param callable(T): U $transformation
+ * @param callable(T): U $function
  * @param R $value
  * @return (R is null ? (callable(Functor<T>): Functor<U>) : Functor<U>)
  */
-function map(callable $transformation, Functor $value = null)
+function map(callable $function, Functor $value = null)
 {
 }
 
@@ -74,7 +74,7 @@ const bind = 'FunctionalPHP\FantasyLand\bind';
  * bind :: Monad m => (a -> m b) -> m a -> m b
  *
  * @template T
- * @template U of Chain
+ * @template U of Monad
  * @template V as Monad<T>|null
  *
  * @param callable(T): U $function
@@ -102,7 +102,6 @@ function compose(callable $f, callable $g): callable
 {
 }
 
-
 /**
  * @var callable
  */
@@ -111,16 +110,16 @@ const applicator = 'FunctionalPHP\FantasyLand\applicator';
 /**
  * applicator :: a -> (a -> b) -> b
  *
+ * @todo Improve type check for callable return type
  * @template T
  * @template V
  * @param T $x
- * @param null|callable(T): V $f
+ * @param null|callable(T): V $function
  * @return (func_num_args() is 1 ? (callable(callable(T): mixed): mixed) : V)
  */
-function applicator($x, callable $f = null)
+function applicator($x, callable $function = null)
 {
 }
-
 
 /**
  * Curry function
@@ -128,23 +127,10 @@ function applicator($x, callable $f = null)
  * @template T
  * @template A of list<T>|array<array-key, T>
  * @param A $args
- * @param callable $function
  * @return callable
  */
-function curryN(int $numberOfArguments, callable $function, array $args = [])
+function curryN(int $numberOfArguments, callable $function, array $args = []): callable
 {
-    return
-        /**
-         * @param  T ...$argsNext
-         * @return mixed
-         */
-        function (...$argsNext) use ($numberOfArguments, $function, $args) {
-            $argsLeft = $numberOfArguments - func_num_args();
-
-            return $argsLeft <= 0
-                ? $function(...push_($args, $argsNext))
-                : curryN($argsLeft, $function, push_($args, $argsNext));
-        };
 }
 
 /**
@@ -155,9 +141,6 @@ const push_ = 'FunctionalPHP\FantasyLand\push_';
 /**
  * push_ :: array[a] -> array[a] -> array[a]
  *
- * Append array with values.
- * Mutation on the road! watch out!!
- *
  * @template T
  * @template U
  * @param array<array-key, T> $array
@@ -166,9 +149,4 @@ const push_ = 'FunctionalPHP\FantasyLand\push_';
  */
 function push_(array $array, array $values): array
 {
-    foreach ($values as $value) {
-        $array[] = $value;
-    }
-
-    return $array;
 }

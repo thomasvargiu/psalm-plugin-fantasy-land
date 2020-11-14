@@ -5,18 +5,22 @@ Feature: applicator
 
   Background:
     Given I have the default psalm configuration
-    And I have the default code preamble
+    And I have the following code preamble
+      """
+      <?php
+      use function FunctionalPHP\FantasyLand\applicator;
+      """
 
   Scenario: Asserting psalm recognizes return type
     Given I have the following code
       """
       $ap = function (string $a): int { return strlen($a); };
       /** @psalm-trace $f */
-      $f = f\applicator('foo');
+      $f = applicator('foo');
       /** @psalm-trace $value */
       $value = $f($ap);
       /** @psalm-trace $finalValue */
-      $finalValue = f\applicator('foo', $ap);
+      $finalValue = applicator('foo', $ap);
       """
     When I run psalm
     Then I see these errors

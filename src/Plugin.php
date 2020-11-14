@@ -35,6 +35,7 @@ class Plugin implements PluginEntryPointInterface
         $classes = [
             Hooks\CurryNReturnTypeProvider::class,
             Hooks\ApplicativeReturnTypeProvider::class,
+            Hooks\ChainReturnTypeProvider::class,
         ];
 
         foreach ($classes as $class) {

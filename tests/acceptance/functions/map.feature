@@ -5,16 +5,22 @@ Feature: map
 
   Background:
     Given I have the default psalm configuration
-    And I have the default code preamble
+    And I have the following code preamble
+      """
+      <?php
+      use FunctionalPHP\FantasyLand\Monad;
+      use function FunctionalPHP\FantasyLand\map;
+      """
 
   Scenario: Asserting psalm recognizes return type
     Given I have the following code
       """
-      $monad = new FakeMonad('foo');
+      /** @var Monad<string> $monad */
+      $monad = null;
       /** @psalm-trace $result */
-      $result = f\map(function (string $a): int { return 2; });
+      $result = map(function (string $a): int { return 2; });
       /** @psalm-trace $value */
-      $value = f\map(function (string $a): int { return 2; }, $monad);
+      $value = map(function (string $a): int { return 2; }, $monad);
       """
     When I run psalm
     Then I see these errors

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FunctionalPHP\FantasyLand;
 
 /**
@@ -8,9 +10,11 @@ namespace FunctionalPHP\FantasyLand;
 interface Semigroup
 {
     /**
-     * @param Semigroup<T> $value
+     * Return result of applying one semigroup with another.
+     * concat :: Semigroup a => a ~> a -> a
      *
+     * @param Semigroup<T> $value
      * @return Semigroup<T>
      */
-    public function concat(Semigroup $value) : Semigroup;
+    public function concat(Semigroup $value): Semigroup;
 }

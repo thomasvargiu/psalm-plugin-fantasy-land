@@ -15,9 +15,9 @@ interface Traversable extends Functor
      *
      * Where the `a` is value inside of container.
      *
-     * @template A of Applicative
-     * @param callable(T): A $fn
-     * @return A
+     * @template B
+     * @param callable(T): Applicative<B> $function
+     * @return Applicative<Traversable<B>>
      */
-    public function traverse(callable $fn);
+    public function traverse(callable $function);
 }

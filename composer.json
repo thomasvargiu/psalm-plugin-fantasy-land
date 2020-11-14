@@ -15,7 +15,7 @@
     "require": {
         "php": "^7.1 || ^8.0",
         "ext-simplexml": "*",
-        "vimeo/psalm": "^4.1.1"
+        "vimeo/psalm": "dev-master"
     },
     "require-dev": {
         "codeception/codeception": "^4.1",

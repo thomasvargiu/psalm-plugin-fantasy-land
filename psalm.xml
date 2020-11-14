@@ -25,6 +25,6 @@
     </issueHandlers>
 
     <plugins>
-        <pluginClass class="TMV\PsalmFantasyLand\Plugin"/>
+        <pluginClass class="TMV\PsalmFantasyLand\Plugin" />
     </plugins>
 </psalm>

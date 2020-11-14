@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FunctionalPHP\FantasyLand;
 
 /**
@@ -8,9 +10,11 @@ namespace FunctionalPHP\FantasyLand;
 interface Functor
 {
     /**
-     * @template F
-     * @param callable(T): F $function
-     * @return Functor<F>
+     * map :: Functor f => f a ~> (a -> b) -> f b
+     *
+     * @template U
+     * @param callable(T): U $function
+     * @return Functor<U>
      */
-    public function map(callable $function) : Functor;
+    public function map(callable $function): Functor;
 }

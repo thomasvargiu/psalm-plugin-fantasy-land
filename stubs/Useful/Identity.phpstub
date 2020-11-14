@@ -24,14 +24,15 @@ class Identity implements FantasyLand\Monad
     /**
      * @param T $value
      */
-    private function __construct($value)
+    protected function __construct($value)
     {
     }
 
     /**
-     * @template F
-     * @param callable(T): F $transformation
-     * @return Identity<F>
+     * @inheritdoc
+     * @template U
+     * @psalm-param callable(T): U $transformation
+     * @psalm-return Identity<U>
      */
     public function map(callable $transformation): FantasyLand\Functor
     {
@@ -39,7 +40,7 @@ class Identity implements FantasyLand\Monad
 
     /**
      * @template U
-     * @param FantasyLand\Apply<U> $applicative
+     * @param Identity<U> $applicative
      * @return (T is callable ? Identity<U> : never-return)
      */
     public function ap(FantasyLand\Apply $applicative): FantasyLand\Apply
@@ -47,7 +48,7 @@ class Identity implements FantasyLand\Monad
     }
 
     /**
-     * @template U of FantasyLand\Chain
+     * @template U of Identity
      * @param callable(T): U $transformation
      * @return U
      */

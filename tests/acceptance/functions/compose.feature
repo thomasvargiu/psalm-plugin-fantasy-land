@@ -5,7 +5,11 @@ Feature: compose
 
   Background:
     Given I have the default psalm configuration
-    And I have the default code preamble
+    And I have the following code preamble
+      """
+      <?php
+      use function FunctionalPHP\FantasyLand\compose;
+      """
 
   Scenario: Asserting psalm recognizes return type
     Given I have the following code
@@ -19,7 +23,7 @@ Feature: compose
       };
 
       /** @psalm-trace $function */
-      $function = f\compose($f1, $f2);
+      $function = compose($f1, $f2);
       """
     When I run psalm
     Then I see these errors

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FunctionalPHP\FantasyLand;
 
 /**
@@ -10,8 +12,17 @@ interface Apply extends Functor
 {
     /**
      * @template U
-     * @param Apply<U> $b
-     * @return (T is callable ? Apply<U> : never-return)
+     * @param Apply<U> $applicative
+     * @return Apply<mixed>
      */
-    public function ap(Apply $b) : Apply;
+    public function ap(Apply $applicative): Apply;
+
+    /**
+     * map :: Apply f => f a ~> (a -> b) -> f b
+     *
+     * @template U
+     * @param callable(T): U $function
+     * @return Apply<U>
+     */
+    public function map(callable $function): Functor;
 }
