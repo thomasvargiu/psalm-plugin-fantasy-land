@@ -12,6 +12,7 @@ use Psalm\Codebase;
 use Psalm\CodeLocation;
 use Psalm\Context;
 use Psalm\FileManipulation;
+use Psalm\Internal\MethodIdentifier;
 use Psalm\Internal\Type\Comparator\CallableTypeComparator;
 use Psalm\Internal\Type\Comparator\UnionTypeComparator;
 use Psalm\Issue\InvalidArgument;
@@ -47,6 +48,11 @@ class ApplicativeReturnTypeProvider implements AfterMethodCallAnalysisInterface
         [$className, $methodName] = explode('::', $declaring_method_id);
 
         if ('ap' !== $methodName) {
+            return;
+        }
+
+
+        if (null === $return_type_candidate) {
             return;
         }
 
@@ -88,10 +94,7 @@ class ApplicativeReturnTypeProvider implements AfterMethodCallAnalysisInterface
             }
 
             if ($applyType->hasTemplate()) {
-                if (null !== $classlikeStorage->template_types) {
-                    $templateType = array_values($applyType->getTemplateTypes())[0];
-                    $typeIndex = array_search($templateType->param_name, array_keys($classlikeStorage->template_types));
-                }
+                $typeIndex = static::getTemplateTypeIndex($classlikeStorage, $applyType);
 
                 if (null === $typeIndex) {
                     return;
@@ -148,7 +151,7 @@ class ApplicativeReturnTypeProvider implements AfterMethodCallAnalysisInterface
             new Type\Atomic\TGenericObject(Apply::class, [$callableParam->type ?? Type::getEmpty()]),
         ]);
         if (! $callableParam || ! UnionTypeComparator::isContainedBy(
-            $codebase,
+                $codebase,
                 $applicativeParamType,
                 $expectedType
             )) {
@@ -166,23 +169,42 @@ class ApplicativeReturnTypeProvider implements AfterMethodCallAnalysisInterface
             return;
         }
 
-        $callable->return_type;
-
         if (null === $callable->return_type) {
             return;
         }
 
-        $typeParams = $varAtomicType->type_params;
-        /** @psalm-suppress PossiblyNullArrayOffset */
-        $typeParams[$typeIndex] = $callable->return_type;
+        $returnType = $return_type_candidate;
 
-        /** @psalm-var non-empty-list<Type\Union> $typeParams */
+        foreach (array_values($returnType->getAtomicTypes()) as $type) {
+            if (! $type instanceof Type\Atomic\TGenericObject) {
+                continue;
+            }
 
-        $type = new Type\Atomic\TGenericObject(
-            $className,
-            $typeParams
-        );
-        $return_type_candidate = new Type\Union([$type]);
+            $applyClassStorage = $codebase->classlike_storage_provider->get($type->value);
+            $applyType = static::getTemplateType($applyClassStorage, Apply::class);
+
+            if (null === $applyType) {
+                return;
+            }
+
+            $index = static::getTemplateTypeIndex($applyClassStorage, $applyType);
+
+            if (null !== $index) {
+                $type->type_params[$index] = $callable->return_type;
+            }
+        }
+    }
+
+    private static function getTemplateTypeIndex(ClassLikeStorage $storage, Type\Union $type): ?int
+    {
+        if (null === $storage->template_types || ! $type->hasTemplate()) {
+            return null;
+        }
+
+        $templateType = array_values($type->getTemplateTypes())[0];
+        $typeIndex = array_search($templateType->param_name, array_keys($storage->template_types));
+
+        return false !== $typeIndex ? $typeIndex : null;
     }
 
     private static function getTemplateType(
