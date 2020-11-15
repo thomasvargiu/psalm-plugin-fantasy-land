@@ -188,8 +188,11 @@ class ApplicativeReturnTypeProvider implements AfterMethodCallAnalysisInterface
             }
 
             $index = static::getTemplateTypeIndex($applyClassStorage, $applyType);
+            /** @var Type\Union $currentType */
+            $currentType = $type->type_params[$index] ?? Type::getMixed();
 
-            if (null !== $index) {
+            if (null !== $index && $currentType->hasMixed()) {
+                /** @psalm-suppress PropertyTypeCoercion */
                 $type->type_params[$index] = $callable->return_type;
             }
         }
