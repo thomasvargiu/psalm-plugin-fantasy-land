@@ -1,6 +1,6 @@
 <?php
 
-namespace TMV\PsalmFantasyLand\Tests;
+namespace TMV\PsalmPluginFantasyLand\Tests;
 
 /**
  * Inherited Methods
@@ -46,7 +46,7 @@ class AcceptanceTester extends \Codeception\Actor
     </projectFiles>
   
     <plugins>
-        <pluginClass class="TMV\PsalmFantasyLand\Plugin"/>
+        <pluginClass class="TMV\PsalmPluginFantasyLand\Plugin"/>
     </plugins>
 </psalm>
 XML;

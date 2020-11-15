@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace TMV\PsalmFantasyLand\Hooks;
+namespace TMV\PsalmPluginFantasyLand\Hooks;
 
 use Psalm\CodeLocation;
 use Psalm\Context;

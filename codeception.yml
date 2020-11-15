@@ -1,4 +1,4 @@
-namespace: TMV\PsalmFantasyLand\Tests
+namespace: TMV\PsalmPluginFantasyLand\Tests
 
 paths:
     tests: tests

@@ -24,17 +24,17 @@
     },
     "extra": {
         "psalm": {
-            "pluginClass": "TMV\\PsalmFantasyLand\\Plugin"
+            "pluginClass": "TMV\\PsalmPluginFantasyLand\\Plugin"
         }
     },
     "autoload": {
         "psr-4": {
-            "TMV\\PsalmFantasyLand\\": "src"
+            "TMV\\PsalmPluginFantasyLand\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "TMV\\PsalmFantasyLand\\Tests\\": "tests"
+            "TMV\\PsalmPluginFantasyLand\\Tests\\": "tests"
         }
     },
     "scripts": {

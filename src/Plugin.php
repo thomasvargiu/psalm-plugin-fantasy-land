@@ -1,6 +1,6 @@
 <?php
 
-namespace TMV\PsalmFantasyLand;
+namespace TMV\PsalmPluginFantasyLand;
 
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
