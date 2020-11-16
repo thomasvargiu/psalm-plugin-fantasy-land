@@ -87,6 +87,27 @@ class ChainReturnTypeProvider implements AfterMethodCallAnalysisInterface
             return;
         }
 
+        $callableArg1 = $callable->params[0] ?? null;
+
+        if (null === $callableArg1 || null === $callableArg1->type) {
+            return;
+        }
+
+        if ($callableArg1->type->isEmpty()) {
+            if (IssueBuffer::accepts(
+                new InvalidArgument(
+                    'Chain value is empty',
+                    new CodeLocation($statements_source, $expr),
+                    $declaring_method_id
+                ),
+                $statements_source->getSuppressedIssues()
+            )) {
+                // keep soldiering on
+            }
+            $return_type_candidate = Type::getEmpty();
+            return;
+        }
+
         $return_type_candidate = $callable->return_type;
     }
 }
